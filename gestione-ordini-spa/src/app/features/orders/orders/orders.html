@@ -1,0 +1,27 @@
+<!-- src/app/features/orders/orders/orders.component.html -->
+<h2>Orders</h2>
+
+<div>
+  <div>
+    <label>From</label>
+    <input [value]="giornoInizio" (input)="giornoInizio = ($any($event.target).value)" />
+  </div>
+
+  <div>
+    <label>To</label>
+    <input [value]="giornoFine" (input)="giornoFine = ($any($event.target).value)" />
+  </div>
+
+  <div>
+    <label>User Id (0 for all if admin)</label>
+    <input
+      type="number"
+      [value]="idUtente_Opsionale"
+      (input)="idUtente_Opsionale = +($any($event.target).value)"
+    />
+  </div>
+
+  <button (click)="load()">Load</button>
+</div>
+<p *ngIf="error" style="color: red">{{ error }}</p>
+<pre *ngIf="orders.length">{{ orders | json }}</pre>

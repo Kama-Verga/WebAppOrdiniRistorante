@@ -1,0 +1,29 @@
+<!-- src/app/features/menu/menu/menu.component.html -->
+<h2>Menu</h2>
+
+<p *ngIf="message">{{ message }}</p>
+
+<ul *ngIf="menu.length; else empty">
+  <li *ngFor="let item of menu">
+    <label>
+      <input type="checkbox" (change)="toggle(item.id ?? 0)" />
+      {{ item.nome ?? ('Item ' + item.id) }}
+      <span *ngIf="item.prezzo != null"> - {{ item.prezzo }}</span>
+    </label>
+  </li>
+</ul>
+
+<ng-template #empty>
+  <p>No items</p>
+</ng-template>
+
+<h3>Create order</h3>
+
+<div>
+  <label>Delivery address</label>
+  <input [value]="address" (input)="address = ($any($event.target).value)" />
+</div>
+
+<button (click)="submitOrder()">Send</button>
+
+<p><a routerLink="/orders">View orders</a></p>

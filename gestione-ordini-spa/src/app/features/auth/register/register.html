@@ -1,0 +1,34 @@
+<h2>Register</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div>
+    <label>Email</label>
+    <input type="email" formControlName="email" />
+  </div>
+
+  <div>
+    <label>Nome</label>
+    <input type="text" formControlName="nome" />
+  </div>
+
+  <div>
+    <label>Cognome</label>
+    <input type="text" formControlName="cognome" />
+  </div>
+
+  <div>
+    <label>Password</label>
+    <input type="password" formControlName="password" />
+  </div>
+
+  <div>
+    <label>Ruolo</label>
+    <input type="number" formControlName="ruolo" />
+  </div>
+
+  <button type="submit">Create</button>
+</form>
+
+<p *ngIf="error" style="color: red">{{ error }}</p>
+
+<p><a routerLink="/login">Back to login</a></p>
