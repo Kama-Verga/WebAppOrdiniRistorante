@@ -1,8 +1,15 @@
+import { TaskJson } from './task.models';
 
 export interface MenuItem {
-  // adapt these to your backend fields
-  id?: number;
-  nome?: string;
-  prezzo?: number;
-  [key: string]: any;
+  id: number;
+  nome: string;
+  prezzo: number;
+  tipo: number;
+  prodottiInOrdine: unknown;
+}
+
+export interface MenuResponse {
+  menu: {
+    menu: TaskJson<MenuItem[]>;
+  };
 }

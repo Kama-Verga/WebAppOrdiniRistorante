@@ -1,17 +1,17 @@
 <!-- src/app/features/menu/menu/menu.component.html -->
 <h2>Menu</h2>
+<div>Debug length: {{ menu?.length }}</div>
 
-<p *ngIf="message">{{ message }}</p>
-
-<ul *ngIf="menu.length; else empty">
+<ul *ngIf="menu.length > 0; else empty">
   <li *ngFor="let item of menu">
-    <label>
-      <input type="checkbox" (change)="toggle(item.id ?? 0)" />
-      {{ item.nome ?? ('Item ' + item.id) }}
-      <span *ngIf="item.prezzo != null"> - {{ item.prezzo }}</span>
-    </label>
+    {{ item.nome }} - {{ item.prezzo }}
   </li>
 </ul>
+
+<ng-template #empty>
+  <p>No items</p>
+</ng-template>
+
 
 <ng-template #empty>
   <p>No items</p>

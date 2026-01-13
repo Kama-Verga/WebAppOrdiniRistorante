@@ -20,12 +20,22 @@ export class MenuComponent implements OnInit {
 
   constructor(private menuApi: MenuService, private ordersApi: OrdersService) {}
 
-  ngOnInit(): void {
-    this.menuApi.getMenu().subscribe({
-      next: (items) => (this.menu = items ?? []),
-      error: () => (this.message = 'Failed to load menu')
-    });
-  }
+ngOnInit(): void {
+  console.log('[MenuComponent] ngOnInit');
+
+  this.menuApi.getMenu().subscribe({
+    next: (items) => {
+      console.log('[MenuComponent] received items:', items);
+      console.log('[MenuComponent] items length:', items?.length);
+      this.menu = items ?? [];
+    },
+    error: (err) => {
+      console.log('[MenuComponent] getMenu error:', err);
+      this.message = 'Failed to load menu';
+    }
+  });
+}
+
 
   toggle(id: number): void {
     if (!id) return;
