@@ -30,7 +30,7 @@ namespace GestioneOrdiniRistorante.Infrastructure
         {
 
             Console.WriteLine("connessione in corso");
-                var connectionString = @"Server=localhost\MSSQLSERVER01;Database=master;TrustServerCertificate=True;Integrated Security=True;";
+                var connectionString = @"Data Source=VERGOGNA;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False;Application Name=""SQL Server Management Studio"";Command Timeout=0";
             optionsBuilder.UseSqlServer(connectionString, sqlOptions => sqlOptions.EnableRetryOnFailure(
                 maxRetryCount: 3,         // Number of retry attempts
                 maxRetryDelay: TimeSpan.FromSeconds(10),
