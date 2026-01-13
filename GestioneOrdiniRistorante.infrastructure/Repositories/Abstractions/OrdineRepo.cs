@@ -39,5 +39,11 @@ namespace GestioneOrdiniRistorante.Infrastructure.Repositories.Abstractions
                 .Where(o => o.Data_creazione >= dataInizio && o.Data_creazione <= dataFine)
                 .ToListAsync();
         }
+
+        public async Task<Ordine> TrovaOrdine(int Numero_Ordine)
+        {
+            return await DB.Ordine
+                .FirstOrDefaultAsync(o => o.Numero_Ordine == Numero_Ordine);
+        }
     }
 }

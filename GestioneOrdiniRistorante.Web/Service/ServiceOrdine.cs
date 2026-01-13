@@ -24,6 +24,12 @@ namespace GestioneOrdiniRistorante.Service
             return ordine;
         }
 
+        public async Task<Ordine> TrovaOrdine(int Numero_Ordine)
+        {
+            var T = await OrdineDB.TrovaOrdine(Numero_Ordine);
+            Console.WriteLine("fatto");
+            return T;
+        }
 
         public async Task<List<Ordine>> TrovaOrdiniConUtente(DateTime Inizio, DateTime Fine, int IdUtente)
         {

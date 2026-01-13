@@ -93,7 +93,13 @@ namespace GestioneOrdiniRistorante.Controllers
             return totale;
         }
 
-
+        [HttpPost]
+        [Route("Visualizza Ordine da Id")]
+        public IActionResult VisualizzaOrdine(VisualizzaOrdineReq T)
+        {
+            var Ris = OrdineS.TrovaOrdine(T.Id_Ordine);
+            return Ok(Ris);
+        }
 
         [HttpPost]
         [Route("Visualizza Ordini")]
