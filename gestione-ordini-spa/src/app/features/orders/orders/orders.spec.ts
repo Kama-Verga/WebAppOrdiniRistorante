@@ -10,7 +10,6 @@ describe('Orders', () => {
       imports: [OrdersComponent]
     })
     .compileComponents();
-
     fixture = TestBed.createComponent(OrdersComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();

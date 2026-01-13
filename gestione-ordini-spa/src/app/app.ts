@@ -1,12 +1,18 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.scss'
+  standalone: true,
+  imports: [CommonModule, RouterLink, RouterOutlet],
+  templateUrl: './app.html'
 })
-export class App {
-  protected readonly title = signal('gestione-ordini-spa');
+export class AppComponent {
+  constructor(public auth: AuthService) {}
+
+  logout(): void {
+    this.auth.logout();
+  }
 }
