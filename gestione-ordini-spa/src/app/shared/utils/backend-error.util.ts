@@ -1,4 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
+import { DebugUtil } from '../utils/debug.utils';
 
 type ExtractOptions = {
   defaultMessage: string;
@@ -8,7 +9,8 @@ type ExtractOptions = {
 export function extractBackendWhy(err: unknown, options: ExtractOptions): string {
   const defaultMsg = options.defaultMessage;
   const invalidReqMsg = options.invalidRequestMessage ?? 'Request not valid. Please check the form fields.';
-
+  const PREFIX = 'BackendErrorUtil';
+  DebugUtil.debug(PREFIX, 'Received error', err);
   if (!(err instanceof HttpErrorResponse)) {
     const anyErr = err as any;
     return anyErr?.message ?? defaultMsg;
@@ -20,6 +22,7 @@ export function extractBackendWhy(err: unknown, options: ExtractOptions): string
 
     // Case 1: plain text body
     if (typeof body === 'string' && body.trim().length > 0) {
+      DebugUtil.debug(PREFIX, 'returning plaintext body', body);
       return body;
     }
 
@@ -27,12 +30,19 @@ export function extractBackendWhy(err: unknown, options: ExtractOptions): string
     if (body && typeof body === 'object') {
       // { message: "..." }
       const message = (body as any).message;
-      if (typeof message === 'string' && message.trim().length > 0) return message;
+      if (typeof message === 'string' && message.trim().length > 0) {
+        DebugUtil.debug(PREFIX, 'returning message', message);
+        return message;
+      }
+
 
       // { error: "..."} { title: "..."} { detail: "..."} { reason: "..."}
       for (const key of ['error', 'title', 'detail', 'reason']) {
         const v = (body as any)[key];
-        if (typeof v === 'string' && v.trim().length > 0) return v;
+        if (typeof v === 'string' && v.trim().length > 0) {
+          DebugUtil.debug(PREFIX, 'was able to extract', v);
+          return v;
+        }
       }
 
       // { errors: { field: ["msg1","msg2"], otherField: ["msg"] } }
@@ -49,7 +59,10 @@ export function extractBackendWhy(err: unknown, options: ExtractOptions): string
             messages.push(fieldErrors);
           }
         }
-        if (messages.length > 0) return messages.join(' ');
+        if (messages.length > 0) {
+          DebugUtil.debug(PREFIX, "was able to extract", messages.join(' '));
+          return messages.join(' ');
+        }
       }
 
       // Unknown object shape: stringify as last resort
