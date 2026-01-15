@@ -27,6 +27,11 @@ namespace GestioneOrdiniRistorante.Web.Controllers
         public IActionResult CreateToken(CreaTokenJWTReq request)
         {
             string token = TokenJWTS.CreaToken(request);
+            if (token == null)
+            {
+                Console.WriteLine("user not found");
+                return BadRequest(new { Error = "User not found" });
+            }
             return Ok(new CreaTokenJWTRes(token));
         }
     }
