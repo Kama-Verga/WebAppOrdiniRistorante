@@ -95,9 +95,9 @@ namespace GestioneOrdiniRistorante.Controllers
 
         [HttpPost]
         [Route("Visualizza Ordine da Id")]
-        public IActionResult VisualizzaOrdine(VisualizzaOrdineReq T)
+        public async Task<IActionResult> VisualizzaOrdine(VisualizzaOrdineReq T)
         {
-            var Ris = OrdineS.TrovaOrdine(T.Id_Ordine);
+            var Ris = await OrdineS.TrovaOrdine(T.Id_Ordine);
             return Ok(Ris);
         }
 
