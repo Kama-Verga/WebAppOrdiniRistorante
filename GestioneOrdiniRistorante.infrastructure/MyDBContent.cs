@@ -35,7 +35,6 @@ namespace GestioneOrdiniRistorante.Infrastructure
                 maxRetryCount: 3,         // Number of retry attempts
                 maxRetryDelay: TimeSpan.FromSeconds(10),
                 errorNumbersToAdd: null))
-                              .LogTo(Console.WriteLine)
                               .EnableSensitiveDataLogging();
             Console.WriteLine("Connessione completata");
         }
