@@ -101,6 +101,8 @@ namespace GestioneOrdiniRistorante.Controllers
             return Ok(Ris);
         }
 
+
+
         [HttpPost]
         [Route("Visualizza Ordini")]
         public IActionResult ViualizzaOrdini(VisualizzaOrdiniReq T)

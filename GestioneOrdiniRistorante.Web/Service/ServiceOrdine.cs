@@ -1,9 +1,10 @@
-﻿using GestioneOrdiniRistorante.Models;
-using System.ComponentModel.Design;
+﻿using GestioneOrdiniRistorante.Application.Service.Interface;
 using GestioneOrdiniRistorante.Infrastructure;
 using GestioneOrdiniRistorante.Infrastructure.Repositories.Abstractions;
-using GestioneOrdiniRistorante.Application.Service.Interface;
+using GestioneOrdiniRistorante.Models;
+using GestioneOrdiniRistorante.Models.Entities;
 using GestioneOrdiniRistorante.Models.Models.DTO;
+using System.ComponentModel.Design;
 
 namespace GestioneOrdiniRistorante.Service
 {
@@ -11,10 +12,12 @@ namespace GestioneOrdiniRistorante.Service
     {
 
         private readonly OrdineRepo OrdineDB;
+        private readonly ProdottoInOrdineRepo ProdottoInOrdineDB;
 
-        public ServiceOrdine(OrdineRepo OR)
+        public ServiceOrdine(OrdineRepo or, ProdottoInOrdineRepo pio)
         {
-            OrdineDB = OR;
+            OrdineDB = or;
+            ProdottoInOrdineDB = pio;
         }
         public async Task<Ordine> CreaOrdine(Ordine ordine)
         {
@@ -24,11 +27,25 @@ namespace GestioneOrdiniRistorante.Service
             return ordine;
         }
 
-        public async Task<Ordine> TrovaOrdine(int Numero_Ordine)
+        // Trova ordine + lista id prodotti (DTO)
+        public async Task<VisualizzaOrdineDTO> TrovaOrdine(int numeroOrdine)
         {
-            var T = await OrdineDB.TrovaOrdine(Numero_Ordine);
-            Console.WriteLine("fatto");
-            return T;
+            var ordine = await OrdineDB.TrovaOrdine(numeroOrdine);
+            if (ordine == null) return null;
+
+            var prodottiId = await ProdottoInOrdineDB.TrovaProdottiIdPerOrdine(numeroOrdine);
+
+            // Qui assumo che tu abbia aggiornato VisualizzaOrdineDTO in forma "piatta":
+            // NumeroOrdine, DataCreazione, IndirizzoDiConsegna, Prezzo, UtenteId, ProdottiId
+            var dto = new VisualizzaOrdineDTO(
+                ordine.Numero_Ordine,
+                ordine.Data_creazione,
+                ordine.Indirizzo_Di_Consegna,
+                ordine.Prezzo,
+                ordine.UtenteId,
+                prodottiId);
+
+            return dto;
         }
 
         public async Task<List<Ordine>> TrovaOrdiniConUtente(DateTime Inizio, DateTime Fine, int IdUtente)
