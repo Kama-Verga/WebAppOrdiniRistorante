@@ -113,6 +113,7 @@ namespace GestioneOrdiniRistorante.Infrastructure.Extension
 
             services.AddScoped<OrdineRepo>();
             services.AddScoped<UtenteRepo>();
+            services.AddScoped<ProdottoInOrdineRepo>();
             services.AddScoped<ProdottoRepo>();
             services.AddScoped<TokenJWTRepo>();
 
