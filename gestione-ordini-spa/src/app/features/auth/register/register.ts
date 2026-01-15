@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { extractBackendWhy } from '../../../shared/utils/backend-error.util';
 
 @Component({
   selector: 'app-register',
@@ -61,77 +62,7 @@ export class RegisterComponent {
 
     return 'Invalid value.';
   }
-
-
-  // helper to parse backend errors on failed register
-  private extractBackendWhy(err: unknown): string {
-  // Fallback
-  const defaultMsg = 'Registration failed. Please try again.';
-
-  if (!(err instanceof HttpErrorResponse)) {
-    // Sometimes people throw plain errors
-    const anyErr = err as any;
-    return anyErr?.message ?? defaultMsg;
-  }
-
-  // If backend sends a helpful body on 400, show it
-  if (err.status === 400) {
-    const body = err.error;
-
-    // Case 1: body is plain text
-    if (typeof body === 'string' && body.trim().length > 0) {
-      return body;
-    }
-
-    // Case 2: body is JSON with common shapes
-    if (body && typeof body === 'object') {
-      // { message: "..." }
-      if (typeof (body as any).message === 'string' && (body as any).message.trim().length > 0) {
-        return (body as any).message;
-      }
-
-      // { error: "..." } or { title: "..." } (common in some APIs)
-      for (const key of ['error', 'title', 'detail', 'reason']) {
-        const v = (body as any)[key];
-        if (typeof v === 'string' && v.trim().length > 0) return v;
-      }
-
-      // { errors: { field: ["msg1","msg2"], otherField: ["msg"] } } (common validation format)
-      const errors = (body as any).errors;
-      if (errors && typeof errors === 'object') {
-        const messages: string[] = [];
-        for (const field of Object.keys(errors)) {
-          const fieldErrors = errors[field];
-          if (Array.isArray(fieldErrors)) {
-            for (const m of fieldErrors) {
-              if (typeof m === 'string' && m.trim().length > 0) messages.push(m);
-            }
-          } else if (typeof fieldErrors === 'string' && fieldErrors.trim().length > 0) {
-            messages.push(fieldErrors);
-          }
-        }
-        if (messages.length > 0) return messages.join(' ');
-      }
-
-      // If object but unknown shape, try JSON stringify (not too noisy)
-      try {
-        const s = JSON.stringify(body);
-        if (s && s !== '{}' && s !== 'null') return s;
-      } catch {
-        // ignore
-      }
-    }
-
-    // If 400 but no usable body
-    return 'Request not valid. Please check the form fields.';
-  }
-
-  // Non-400: keep a clean generic message (or show status text)
-  if (typeof err.error === 'string' && err.error.trim().length > 0) return err.error;
-  return err.message || defaultMsg;
-}
-
-
+  
  submit(): void {
     this.submitted = true;
     this.error = '';
@@ -144,7 +75,9 @@ export class RegisterComponent {
     this.auth.register(this.form.value as any).subscribe({
       next: () => this.router.navigateByUrl('/login'),
       error: (e) => {
-        this.error = this.extractBackendWhy(e);
+        this.error = extractBackendWhy(e,{
+          defaultMessage: 'registration failed.'
+        });
       }
     });
   }

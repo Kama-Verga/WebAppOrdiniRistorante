@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
-
+import { extractBackendWhy } from '../../../shared/utils/backend-error.util';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -34,7 +34,11 @@ export class LoginComponent {
 
     this.auth.login({ email, password }).subscribe({
       next: () => this.router.navigateByUrl('/menu'),
-      error: (e) => (this.error = e?.message ?? 'Login failed')
+      error: (e) => {
+        this.error = extractBackendWhy(e, {
+          defaultMessage:'login failed.'
+        })
+      }
     });
   }
 }
