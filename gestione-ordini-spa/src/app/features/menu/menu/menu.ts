@@ -5,6 +5,8 @@ import { RouterLink } from '@angular/router';
 import { MenuService } from '../../../core/services/menu.service';
 import { OrdersService } from '../../../core/services/order.service';
 import { MenuItem } from '../../../core/models/menu.models';
+import { ChangeDetectorRef, NgZone } from '@angular/core';
+import { extractBackendWhy } from '../../../shared/utils/backend-error.util';
 
 @Component({
   selector: 'app-menu',
@@ -18,33 +20,45 @@ export class MenuComponent implements OnInit {
   address = '';
   message = '';
 
-  constructor(private menuApi: MenuService, private ordersApi: OrdersService) {}
+  constructor(private menuApi: MenuService, private ordersApi: OrdersService,
+    private cdr: ChangeDetectorRef, private zone: NgZone) { }
 
-ngOnInit(): void {
-  console.log('[MenuComponent] ngOnInit');
+  ngOnInit(): void {
+    console.log('[MenuComponent] ngOnInit');
 
-  this.menuApi.getMenu().subscribe({
-    next: (items) => {
-      console.log('[MenuComponent] received items:', items);
-      console.log('[MenuComponent] items length:', items?.length);
-      this.menu = items ?? [];
-    },
-    error: (err) => {
-      console.log('[MenuComponent] getMenu error:', err);
-      this.message = 'Failed to load menu';
-    }
-  });
-}
-
-
-  toggle(id: number): void {
-    if (!id) return;
-    if (this.selectedIds.includes(id)) {
-      this.selectedIds = this.selectedIds.filter((x) => x !== id);
-    } else {
-      this.selectedIds = [...this.selectedIds, id];
-    }
+    this.menuApi.getMenu().subscribe({
+      next: (items) => {
+        console.log('[MenuComponent] received items:', items);
+        console.log('[MenuComponent] items length:', items?.length);
+          this.menu = items ?? [];
+          this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.log('[MenuComponent] getMenu error:', err);
+          this.message = 'Failed';
+          this.cdr.detectChanges();
+      }
+    });
   }
+
+
+  addItem(id: number): void {
+    this.selectedIds.push(id);
+  }
+
+  removeItem(id: number): void {
+    const idx = this.selectedIds.indexOf(id);
+    if (idx >= 0) this.selectedIds.splice(idx, 1);
+  }
+
+  qty(id: number): number {
+    let count = 0;
+    for (const x of this.selectedIds) {
+      if (x === id) count++;
+    }
+    return count;
+  }
+
 
   submitOrder(): void {
     this.message = '';
@@ -65,9 +79,13 @@ ngOnInit(): void {
       .subscribe({
         next: () => {
           this.message = 'Order created';
+          this.cdr.detectChanges();
           this.selectedIds = [];
         },
-        error: () => (this.message = 'Order failed')
+        error: (e) => {
+          this.message = extractBackendWhy(e, {defaultMessage : 'order creation failed'});
+          this.cdr.detectChanges();
+        }
       });
   }
 }

@@ -1,27 +1,93 @@
-<!-- src/app/features/orders/orders/orders.component.html -->
-<h2>Orders</h2>
+<section style="max-width: 900px; margin: 0 auto; padding: 16px;">
 
-<div>
-  <div>
-    <label>From</label>
-    <input [value]="giornoInizio" (input)="giornoInizio = ($any($event.target).value)" />
-  </div>
+  <h2>Order History</h2>
 
-  <div>
-    <label>To</label>
-    <input [value]="giornoFine" (input)="giornoFine = ($any($event.target).value)" />
-  </div>
+  <!-- FILTER FORM (Reactive Forms) -->
+  <form
+    [formGroup]="form"
+    (ngSubmit)="load()"
+    style="display: flex; gap: 12px; align-items: end; margin-bottom: 16px;"
+  >
 
-  <div>
-    <label>User Id (0 for all if admin)</label>
-    <input
-      type="number"
-      [value]="idUtente_Opsionale"
-      (input)="idUtente_Opsionale = +($any($event.target).value)"
-    />
-  </div>
+    <div>
+      <label>From</label><br />
+      <input
+        type="date"
+        formControlName="giornoInizio"
+      />
+    </div>
 
-  <button (click)="load()">Load</button>
-</div>
-<p *ngIf="error" style="color: red">{{ error }}</p>
-<pre *ngIf="orders.length">{{ orders | json }}</pre>
+    <div>
+      <label>To</label><br />
+      <input
+        type="date"
+        formControlName="giornoFine"
+      />
+    </div>
+
+    <button type="submit">
+      Load orders
+    </button>
+
+  </form>
+
+  <!-- ERROR -->
+  @if (error) {
+    <div style="background:#ffe6e6; border:1px solid #f5c2c2; padding:10px; margin-bottom:12px;">
+      {{ error }}
+    </div>
+  }
+
+  <!-- EMPTY STATE -->
+  @if (!error && orders.length === 0) {
+    <div style="padding: 12px; border: 1px solid #ddd;">
+      No orders found for selected period.
+    </div>
+  }
+
+  <!-- TABLE -->
+  @if (orders.length > 0) {
+    <table style="width:100%; border-collapse: collapse;">
+
+      <thead>
+        <tr style="border-bottom: 2px solid #ddd;">
+          <th style="padding:10px;">Date</th>
+          <th style="padding:10px;">Delivery address</th>
+          <th style="padding:10px;">User</th>
+          <th style="padding:10px; text-align:right;">Total</th>
+          <th style="padding:10px; text-align:right;">Items</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (o of orders; track $index) {
+          <tr style="border-bottom: 1px solid #eee;">
+
+            <td style="padding:10px;">
+              {{ o.data_creazione | date:'dd/MM/yyyy' }}
+            </td>
+
+            <td style="padding:10px;">
+              {{ o.indirizzo_Di_Consegna }}
+            </td>
+
+            <td style="padding:10px;">
+              #{{ o.utenteId }}
+            </td>
+
+            <td style="padding:10px; text-align:right;">
+              {{ o.prezzo | number:'1.2-2' }} €
+            </td>
+
+            <td style="padding:10px; text-align:right;">
+              {{ o.prodottiInOrdine?.length ?? 0 }}
+            </td>
+
+          </tr>
+        }
+      </tbody>
+
+    </table>
+  }
+
+</section>
