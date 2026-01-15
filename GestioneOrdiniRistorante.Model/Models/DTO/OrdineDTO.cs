@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GestioneOrdiniRistorante.Models.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,7 @@ namespace GestioneOrdiniRistorante.Models.Models.DTO
         public String Indirizzo_Di_Consegna { get; set; }
         public decimal Prezzo { get; set; }
 
-        public List<Prodotto> Prodotti { get; set; }
+        public List<ProdottoInOrdine> Prodotti { get; set; }
 
         public OrdineDTO(Ordine T)
         {
@@ -24,6 +25,9 @@ namespace GestioneOrdiniRistorante.Models.Models.DTO
             this.Numero_Ordine = T.Numero_Ordine;
             this.Indirizzo_Di_Consegna = T.Indirizzo_Di_Consegna;
             this.Prezzo = T.Prezzo;
+            this.Prodotti = T.ProdottiInOrdine.ToList();
         }
+
+
     }
 }
