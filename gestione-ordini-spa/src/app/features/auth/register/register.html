@@ -1,29 +1,45 @@
 <h2>Register</h2>
 
 <form [formGroup]="form" (ngSubmit)="submit()">
+
   <div>
     <label>Email</label>
     <input type="email" formControlName="email" />
+    <div *ngIf="shouldShowError('email')" style="color: red">
+      {{ getErrorMessage('email') }}
+    </div>
   </div>
 
   <div>
     <label>Nome</label>
     <input type="text" formControlName="nome" />
+    <div *ngIf="shouldShowError('nome')" style="color: red">
+      {{ getErrorMessage('nome') }}
+    </div>
   </div>
 
   <div>
     <label>Cognome</label>
     <input type="text" formControlName="cognome" />
+    <div *ngIf="shouldShowError('cognome')" style="color: red">
+      {{ getErrorMessage('cognome') }}
+    </div>
   </div>
 
   <div>
     <label>Password</label>
     <input type="password" formControlName="password" />
+    <div *ngIf="shouldShowError('password')" style="color: red">
+      {{ getErrorMessage('password') }}
+    </div>
   </div>
 
   <div>
     <label>Ruolo</label>
     <input type="number" formControlName="ruolo" />
+    <div *ngIf="shouldShowError('ruolo')" style="color: red">
+      {{ getErrorMessage('ruolo') }}
+    </div>
   </div>
 
   <button type="submit">Create</button>
