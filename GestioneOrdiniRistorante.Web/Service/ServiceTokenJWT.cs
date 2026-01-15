@@ -61,7 +61,7 @@ namespace GestioneOrdiniRistorante.Application.Service
                 );
 
             var token = new JwtSecurityTokenHandler().WriteToken(securityToken);
-            return "Bearer " + token;
+            return token;
 
         }
     }

@@ -5,8 +5,21 @@
 <ul *ngIf="menu.length > 0; else empty">
   <li *ngFor="let item of menu">
     {{ item.nome }} - {{ item.prezzo }}
+
+    <button type="button" (click)="removeItem(item.id)" [disabled]="qty(item.id) === 0">
+      -
+    </button>
+
+    <span style="padding: 0 8px;">
+      {{ qty(item.id) }}
+    </span>
+
+    <button type="button" (click)="addItem(item.id)">
+      +
+    </button>
   </li>
 </ul>
+
 
 <ng-template #empty>
   <p>No items</p>
@@ -25,5 +38,5 @@
 </div>
 
 <button (click)="submitOrder()">Send</button>
-
+<p *ngIf="message" style="color: red">{{ message }}</p>
 <p><a routerLink="/orders">View orders</a></p>
