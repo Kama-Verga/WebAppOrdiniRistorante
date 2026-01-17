@@ -7,12 +7,28 @@ import { OrdersService } from '../../../core/services/order.service';
 import { MenuItem } from '../../../core/models/menu.models';
 import { ChangeDetectorRef, NgZone } from '@angular/core';
 import { extractBackendWhy } from '../../../shared/utils/backend-error.util';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [CommonModule, RouterLink],
-  templateUrl: './menu.html'
+  imports: [
+    CommonModule,
+    RouterLink,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatChipsModule,
+    MatFormFieldModule,
+    MatInputModule
+  ],
+  templateUrl: './menu.html',
+  styleUrls: ['./menu.scss']
 })
 export class MenuComponent implements OnInit {
   menu: MenuItem[] = [];
@@ -87,5 +103,11 @@ export class MenuComponent implements OnInit {
           this.cdr.detectChanges();
         }
       });
+  }
+
+  orderTotal(): number {
+    if (this.selectedIds.length === 0) return 0;
+    const priceMap = new Map(this.menu.map((item) => [item.id, item.prezzo]));
+    return this.selectedIds.reduce((sum, id) => sum + (priceMap.get(id) ?? 0), 0);
   }
 }

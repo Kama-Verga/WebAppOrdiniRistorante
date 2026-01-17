@@ -1,15 +1,25 @@
-<nav style="display:flex; gap:12px; padding:12px; border-bottom:1px solid #ddd;">
-  <a routerLink="/menu">Menu</a>
-  <a routerLink="/orders">Orders</a>
+<mat-toolbar class="app-toolbar">
+  <div class="toolbar-content">
+    <div class="brand">
+      <mat-icon aria-hidden="true">restaurant</mat-icon>
+      <span class="brand-text">Gestione Ordini</span>
+    </div>
 
-  <span style="flex:1"></span>
+    <nav class="toolbar-nav">
+      <a mat-button routerLink="/menu" routerLinkActive="active-link">Menu</a>
+      <a mat-button routerLink="/orders" routerLinkActive="active-link">Orders</a>
+    </nav>
 
-  <a *ngIf="!auth.isLoggedIn()" routerLink="/login">Login</a>
-  <a *ngIf="!auth.isLoggedIn()" routerLink="/register">Register</a>
+    <span class="toolbar-spacer"></span>
 
-  <button *ngIf="auth.isLoggedIn()" (click)="logout()">Logout</button>
-</nav>
+    <div class="toolbar-auth">
+      <a *ngIf="!auth.isLoggedIn()" mat-stroked-button routerLink="/login">Login</a>
+      <a *ngIf="!auth.isLoggedIn()" mat-flat-button color="primary" routerLink="/register">Register</a>
+      <button *ngIf="auth.isLoggedIn()" mat-stroked-button (click)="logout()">Logout</button>
+    </div>
+  </div>
+</mat-toolbar>
 
-<main style="padding: 12px;">
+<main class="page-shell">
   <router-outlet></router-outlet>
 </main>
