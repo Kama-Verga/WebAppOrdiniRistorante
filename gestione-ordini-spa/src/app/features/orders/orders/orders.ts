@@ -4,17 +4,34 @@ import { CommonModule } from '@angular/common';
 import { OrdersService } from '../../../core/services/order.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { extractBackendWhy } from '../../../shared/utils/backend-error.util';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatTableModule } from '@angular/material/table';
+import { MatChipsModule } from '@angular/material/chips';
 
 @Component({
   selector: 'app-orders',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './orders.html'
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTableModule,
+    MatChipsModule
+  ],
+  templateUrl: './orders.html',
+  styleUrls: ['./orders.scss']
 })
 export class OrdersComponent implements OnInit {
   orders: any[] = [];
   error = '';
   form: FormGroup;
+  displayedColumns: string[] = ['date', 'address', 'user', 'total', 'items'];
 
   // Keep the same names you had commented out, but actually define them.
   // If you really need them in the payload, keep them here.

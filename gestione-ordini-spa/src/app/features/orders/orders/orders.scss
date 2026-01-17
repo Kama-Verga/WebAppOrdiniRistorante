@@ -1,0 +1,86 @@
+.orders-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.hero-copy p {
+  margin-top: 8px;
+}
+
+.filter-card,
+.table-card,
+.status-card {
+  background: var(--app-surface);
+  border-radius: var(--app-radius);
+  box-shadow: var(--app-shadow);
+}
+
+.filter-card {
+  padding: 16px;
+}
+
+.filter-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+  gap: 16px;
+  align-items: end;
+}
+
+.filter-form mat-form-field {
+  width: 100%;
+}
+
+.status-card {
+  padding: 16px 18px;
+  font-weight: 500;
+}
+
+.error-card {
+  border-left: 4px solid #c2534f;
+  background: #fbeeed;
+}
+
+.empty-card {
+  border-left: 4px solid #7b8a93;
+  background: #f4f6f7;
+}
+
+.table-card {
+  padding: 8px 12px 12px;
+  overflow-x: auto;
+}
+
+.orders-table {
+  width: 100%;
+}
+
+.orders-table th {
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-size: 0.75rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.orders-table td,
+.orders-table th {
+  padding: 14px 12px;
+}
+
+.orders-table td {
+  word-break: break-word;
+}
+
+.cell-right {
+  text-align: right;
+}
+
+@media (max-width: 900px) {
+  .filter-form {
+    grid-template-columns: 1fr;
+  }
+
+  .table-card {
+    padding: 8px;
+  }
+}
