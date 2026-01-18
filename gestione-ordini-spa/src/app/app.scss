@@ -7,6 +7,8 @@
   position: sticky;
   top: 0;
   z-index: 10;
+  height: auto;
+  min-height: 64px;
   background: linear-gradient(120deg, rgba(0, 118, 115, 0.96), rgba(2, 91, 130, 0.96));
   color: var(--mat-sys-on-primary);
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
@@ -17,7 +19,7 @@
   width: 100%;
   max-width: var(--app-max-width);
   margin: 0 auto;
-  padding: 0 var(--app-gutter);
+  padding: 12px var(--app-gutter);
   display: flex;
   align-items: center;
   gap: 16px;
@@ -87,22 +89,20 @@
 
 @media (max-width: 720px) {
   .toolbar-content {
-    flex-wrap: wrap;
-    row-gap: 12px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
   }
 
   .toolbar-nav {
     width: 100%;
-    justify-content: space-between;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
   .toolbar-auth {
     width: 100%;
-    justify-content: flex-end;
+    justify-content: center;
     flex-wrap: wrap;
-  }
-
-  .page-shell {
-    padding: 24px 16px 40px;
   }
 }
