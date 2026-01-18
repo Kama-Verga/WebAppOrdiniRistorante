@@ -1,0 +1,277 @@
+\documentclass{article}
+
+% Language setting
+\usepackage[italian]{babel}
+
+% Set page size and margins
+\usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+\usepackage{fancyhdr} % Pacchetto per personalizzare intestazioni e piè di pagina
+\pagestyle{fancy}     % Abilita lo stile personalizzato
+\fancyhead{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyhead[C]{
+    \begin{tabular}{|c|c|}
+    \hline
+       Web App di Gestione ordini ristorante & Fanesi -- Vergari \\\hline
+       Corso Applicazioni Web, Mobile E Cloud  & Data:  26/01/2026\\\hline
+    \end{tabular}\newline
+}
+
+\fancyfoot[L]{Vergari Andrea m.120200} % Nota nel piè di pagina a sinistra
+\fancyfoot[C]{Fanesi Filippo m.124132}
+\fancyfoot[R]{\thepage} % Numero della pagina a destra
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Relazione Progetto Web App di Gestione ordini ristorante}
+\author{Vergari Andrea m.120200\\Fanesi Filippo m.124132}
+
+\begin{document}
+\maketitle
+
+\renewcommand\contentsname{Indice}
+\tableofcontents
+
+\newpage
+
+\section{Obiettivi del progetto}
+L’obiettivo del progetto è realizzare una Web App completa (FrontEnd + BackEnd) in grado di gestire gli ordini in delivery di un ristorante.
+L’utente può consultare il menù, registrarsi, effettuare il login e creare nuovi ordini inserendo:
+\begin{itemize}
+    \item un indirizzo di consegna;
+    \item una lista di prodotti da ordinare.
+\end{itemize}
+Il FrontEnd include anche una pagina Orders con filtro per data.
+
+L'applicativo implementa inoltre una regola di business centrale: la gestione di uno sconto legato al ``menù completo''.
+Un menù completo è definito come un ordine che contiene almeno (primo, secondo, contorno, dolce)
+In presenza di questa combinazione, viene applicato uno sconto fisso del 10\% solamente sui prodotti che appartengono al pacchetto menù.
+
+\subsection{I Requisiti funzionali principali}
+\begin{itemize}
+    \item Registrazione di un nuovo utente (anche non autenticato).
+    \item Login Ed relativa emissione del token JWT.
+    \item Visualizzazione del menù (pubblica).
+    \item Creazione di un ordine (protetta da JWT).
+    \item Visualizzazione ordini (protetta da JWT), con differenza di permessi tra utente standard e admin.
+    \item Visualizzazione del singolo ordine ed il suo contenuto.
+\end{itemize}
+
+\subsection{Requisiti non funzionali}
+\begin{itemize}
+    \item Sicurezza: accesso agli endpoint sensibili tramite autenticazione JWT.
+    \item Separazione delle responsabilità: codice organizzato per layer per mantenere chiarezza e manutenibilità.
+    \item Consistenza dei dati: salvataggio su database relazionale SQL Server in ambiente Azure.
+\end{itemize}
+
+\newpage
+
+\iffalse \subsection{Problematiche riscontrate}
+In questa sezione vengono riportate alcune problematiche tipiche emerse durante lo sviluppo e le relative soluzioni adottate.
+
+\subsubsection{Problema 1: inserimento manuale su colonna Identity}
+Durante i test sul database si è presentato un errore legato all’inserimento esplicito dell’ID in una tabella con colonna Identity (errore SQL Server: inserimento esplicito non consentito con \texttt{IDENTITY\_INSERT OFF}).
+\paragraph{Soluzione}
+Si è evitato di includere la colonna Identity nella \texttt{INSERT}. In caso di import/migrazioni controllate, è possibile abilitare temporaneamente \texttt{IDENTITY\_INSERT ON}, ma nel sistema standard l’ID viene sempre gestito automaticamente dal DB.
+
+\subsubsection{Problema 2: autorizzazione JWT non applicata correttamente}
+In fase iniziale alcune rotte risultavano accessibili anche senza token, a causa di configurazione incompleta dei controlli di autorizzazione.
+\paragraph{Soluzione}
+E' stato reso obbligatorio l'invio del token JWT sugli endpoint sensibili (creazione ordine e visualizzazione ordini). Lato FrontEnd e stato introdotto un interceptor JWT che legge il token da \texttt{localStorage} e lo allega alle richieste protette.
+
+\subsubsection{Problema 3: calcolo sconto e casi limite}
+È stato necessario gestire casi limite come:
+\begin{itemize}
+    \item ordine con più prodotti della stessa categoria (es. due primi);
+    \item ordine che contiene quasi tutte le categorie (manca un solo elemento).
+\end{itemize}
+\paragraph{Soluzione}
+Si è definita una logica deterministica: lo sconto si applica solo se tutte le categorie richieste sono presenti; vengono scontati esclusivamente gli elementi selezionati come pacchetto menù, lasciando invariati gli altri prodotti.
+
+\subsubsection{Problema 4: filtro ordini per data e per utente}
+Filtrare per intervallo temporale e, nel caso admin, anche per utente, può portare ad ambiguità sui parametri (es. date uguali, intervallo vuoto, id opzionale non valido).
+\paragraph{Soluzione}
+Sono state introdotte validazioni sui parametri in input (date obbligatorie e coerenti) e la logica di filtro è stata centralizzata nel layer applicativo, evitando duplicazioni nei controller.
+
+\fi
+
+\newpage
+
+
+\section{Use-Case}
+In questa sezione vengono descritti i principali casi d’uso. Un diagramma UML dedicato sarà aggiunto successivamente.
+
+\subsection{Attori}
+\begin{itemize}
+    \item \textbf{Utente non autenticato}: può registrarsi, effettuare login e visualizzare il menù.
+    \item \textbf{User (ruolo 1)}: può creare ordini e visualizzare la propria cronologia ordini.
+    \item \textbf{Admin (ruolo 0)}: può visualizzare la cronologia ordini di tutti gli utenti e filtrare per UserId.
+\end{itemize}
+
+\subsection{Casi d’uso principali}
+\begin{itemize}
+    \item \textbf{UC1 - Registrazione}: l’utente inserisce dati anagrafici e password, il sistema crea un record \texttt{Utente}.
+    \item \textbf{UC2 - Login}: l’utente inserisce credenziali, il sistema restituisce un token JWT valido.
+    \item \textbf{UC3 - Visualizza Menù}: l’utente consulta i prodotti disponibili.
+    \item \textbf{UC4 - Crea Ordine}: l’utente autenticato invia indirizzo e lista prodotti; il sistema calcola totale e salva \texttt{Ordine} e \texttt{ProdottoInOrdine}.
+    \item \textbf{UC5 - Visualizza Ordini}: l’utente autenticato richiede la lista ordini (solo propri se User; tutti o filtrati se Admin).
+    \item \textbf{UC6 - Visualizza singolo Ordine}: l’utente autenticato richiede tramite ID i dettagli di un ordine.
+\end{itemize}
+
+\begin{center}
+    \includegraphics[width=12cm]{Diagramma senza titolo.png}
+\end{center}
+
+\newpage
+
+
+\section{Struttura del codice}
+\subsection{Struttura BackEnd}
+Il BackEnd è organizzato secondo un’architettura a layer (Layered Architecture), con separazione delle responsabilità.
+Lo scopo è mantenere il codice più leggibile, testabile e facilmente estendibile nel tempo.
+
+\subsubsection{Organizzazione a progetti}
+La soluzione è suddivisa in più progetti:
+\begin{itemize}
+    \item \textbf{GestioneOrdiniRistorante.Web}: espone le API (controller), gestisce configurazioni e pipeline HTTP.
+    \item \textbf{GestioneOrdiniRistorante.Application}: contiene la logica applicativa (service, validator, ecc.).
+    \item \textbf{GestioneOrdiniRistorante.Models}: contiene modelli di dominio ed oggetti di trasporto dati (DTO), request e response.
+    \item \textbf{GestioneOrdiniRistorante.Infrastructure}: gestisce l’accesso ai dati e l’integrazione con il database.
+\end{itemize}
+
+\subsubsection{Database (entità principali)}
+Nel database sono presenti le seguenti tabelle principali:
+\begin{itemize}
+    \item \textbf{Utente}
+    \item \textbf{Ordine}
+    \item \textbf{Prodotto}
+    \item \textbf{ProdottoInOrdine} (tabella di collegamento tra ordini e prodotti ordinati)
+\end{itemize}
+
+
+\subsubsection{Nota sulle ``migrations''}
+Le migrations sono un meccanismo (tipico degli ORM) che permette di versionare lo schema del database e aggiornarlo automaticamente.
+Nel progetto non risultano adottate: la gestione del database è stata svolta manualmente tramite SQL Server Management Studio.
+
+\subsection{Struttura FrontEnd}
+Il FrontEnd Angular e organizzato per funzionalita, con routing per le pagine principali.
+\begin{itemize}
+    \item \textbf{features}: pagine Login, Register, Menu e Orders (componenti standalone).
+    \item \textbf{core}: servizi API (auth, menu, ordini), guard di autenticazione e interceptor JWT.
+    \item \textbf{shared}: utility comuni per errori e debug.
+\end{itemize}
+L'interfaccia usa Angular Material e Reactive Forms per i form e i filtri.
+
+\newpage
+
+\section{Endpoint e API disponibili}
+Di seguito sono riportati gli endpoint implementati nel sistema (come da specifica di progetto).
+
+\subsection{Creazione utente}
+\textbf{POST} \\
+\texttt{https://localhost:7032/Utente/Crea-Utente} \\
+Endpoint pubblico (anche non autenticati) per creare un utente.
+\begin{verbatim}
+{
+  "email": "string",
+  "nome": "string",
+  "cognome": "string",
+  "password": "string",
+  "ruolo": 0
+}
+\end{verbatim}
+
+\subsection{Login e token JWT}
+\textbf{POST} \\
+\texttt{https://localhost:7032/api/v1/Token/Create Token} \\
+Endpoint usato per effettuare il login e ricevere un token JWT.
+\begin{verbatim}
+{
+  "email": "string",
+  "password": "string"
+}
+\end{verbatim}
+
+\subsection{Visualizzazione menù}
+\textbf{GET} \\
+\texttt{https://localhost:7032/Menù} \\
+Endpoint pubblico per consultare il menù.
+
+\newpage
+
+\subsection{Creazione ordine}
+\textbf{POST} \\
+\texttt{https://localhost:7032/Oridine/CreaOrdine} \\
+Endpoint protetto da JWT. Inserisce indirizzo di consegna e lista ID prodotti.
+\begin{verbatim}
+{
+  "indirizzo_Di_Consegna": "string",
+  "contenuto": [ 0 ]
+}
+\end{verbatim}
+\texttt{contenuto} è una lista di interi che rappresentano gli ID dei prodotti da ordinare.
+
+\subsection{Visualizzazione ordini (con filtri)}
+\textbf{POST} \\
+\texttt{https://localhost:7032/Oridine/Visualizza Ordini} \\
+Endpoint protetto da JWT. Mostra la cronologia ordini:
+\begin{itemize}
+    \item per l’utente autenticato (User);
+    \item per tutti gli utenti (Admin);
+    \item filtrata per singolo utente tramite \texttt{idUtente\_Opsionale} (Admin).
+\end{itemize}
+\begin{verbatim}
+{
+  "giornoInizio": "2026-01-06T18:23:14.430Z",
+  "giornoFine": "2026-01-06T18:23:14.430Z",
+  "idUtente_Opsionale": 0
+}
+\end{verbatim}
+Nota: se \texttt{idUtente\_Opsionale} è 0 e il ruolo di chi fa la richiesta è 0 (Admin), vengono visualizzati gli ordini di tutti gli utenti.
+
+\subsection{Visualizzazione ordine}
+\textbf{POST} \\
+\texttt{https://localhost:7032/Oridine/Visualizza Ordine} \\
+Endpoint protetto da JWT. Mostra un ordine da un ID:
+\begin{itemize}
+    \item per l’utente autenticato (User);
+    \item trova l'ordine tramite un ID.
+\end{itemize}
+\begin{verbatim}
+{
+  "Id_Ordine": 0
+}
+\end{verbatim}
+
+\newpage
+
+\section{Sunto del sistema totale}
+Il sistema completo funziona end-to-end nel seguente modo:
+\begin{enumerate}
+    \item L'utente apre il FrontEnd Angular: la pagina Menu e pubblica e mostra i prodotti disponibili.
+    \item Registrazione e login salvano il token JWT in \texttt{localStorage}.
+    \item L'interceptor JWT allega il token alle richieste protette; la pagina Orders e protetta da guard.
+    \item Dal Menu l'utente seleziona i piatti, inserisce l'indirizzo e invia l'ordine.
+    \item In creazione ordine, il BackEnd calcola il totale e applica lo sconto del 10\% se l'ordine contiene un menu completo.
+    \item Gli ordini sono salvati su SQL Server (Azure); la pagina Orders mostra la cronologia con filtro per data, mentre lato backend restano i permessi User/Admin.
+\end{enumerate}
+
+\section{Tecnologie adottate}
+In base all’implementazione descritta, le principali tecnologie utilizzate sono:
+\begin{itemize}
+    \item BackEnd: ASP.NET Core Web API (C\#)
+    \item Autenticazione: JWT (JSON Web Token)
+    \item Database: Microsoft SQL Server su Azure
+    \item Gestione DB: SQL Server Management Studio (SSMS)
+    \item FrontEnd: Angular (TypeScript) con componenti standalone e Angular Material
+    \item Documentazione e test API: Swagger / OpenAPI (tipicamente integrato nelle Web API)
+    \item Versionamento e CI (dalla soluzione): GitHub / GitHub Actions
+\end{itemize}
+
+
+\end{document}
