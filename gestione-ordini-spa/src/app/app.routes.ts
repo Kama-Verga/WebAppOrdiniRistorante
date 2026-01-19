@@ -7,11 +7,11 @@ import { OrderDetailComponent } from './features/orders/order-detail/order-detai
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'menu' },
+  { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'menu', component: MenuComponent /*canActivate: [authGuard]*/ },
   { path: 'orders', component: OrdersComponent, canActivate: [authGuard] },
   { path: 'orders/:id', component: OrderDetailComponent, canActivate: [authGuard] },
-  { path: '**', redirectTo: 'menu' }
+  { path: '**', redirectTo: 'login' }
 ];

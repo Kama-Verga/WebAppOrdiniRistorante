@@ -1,5 +1,5 @@
 // src/app/features/orders/orders/orders.component.ts
-import { Component, DebugElement, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, DebugElement, NgZone, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrdersService } from '../../../core/services/order.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -16,18 +16,6 @@ import { MatChipsModule } from '@angular/material/chips';
 import { Router } from '@angular/router';
 import { Order } from '../../../core/models/order.models';
 import { DebugUtil } from '../../../shared/utils/debug.utils';
-
-const IT_DATE_FORMATS = {
-  parse: {
-    dateInput: { day: '2-digit', month: '2-digit', year: 'numeric' }
-  },
-  display: {
-    dateInput: { day: '2-digit', month: '2-digit', year: 'numeric' },
-    monthYearLabel: { month: 'short', year: 'numeric' },
-    dateA11yLabel: { day: '2-digit', month: 'long', year: 'numeric' },
-    monthYearA11yLabel: { month: 'long', year: 'numeric' }
-  }
-};
 
 @Component({
   selector: 'app-orders',
@@ -47,7 +35,7 @@ const IT_DATE_FORMATS = {
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'it-IT' },
-    { provide: MAT_DATE_FORMATS, useValue: IT_DATE_FORMATS }
+    { provide: MAT_DATE_FORMATS, useValue: { display: { dateInput: 'dd/MM/yyyy' }, parse: { dateInput: 'dd/MM/yyyy' } } }
   ],
   templateUrl: './orders.html',
   styleUrls: ['./orders.scss']
@@ -63,7 +51,7 @@ export class OrdersComponent implements OnInit {
   // If you really need them in the payload, keep them here.
   idUtente_Opsionale = 0;
 
-  constructor(private ordersApi: OrdersService, private fb: FormBuilder, private router: Router) {
+  constructor(private cdr : ChangeDetectorRef ,private ordersApi: OrdersService, private fb: FormBuilder, private router: Router) {
     this.form = this.fb.group({
       giornoInizio: [null as Date | null],
       giornoFine: [null as Date | null]
@@ -113,9 +101,11 @@ export class OrdersComponent implements OnInit {
         next: (res) => {
           this.orders = res ?? [];
           console.log(res);
+          this.cdr.detectChanges();
         },
         error: (e) => {
           this.error = extractBackendWhy(e, { defaultMessage: 'Failed to load orders' });
+          this.cdr.detectChanges();
         }
       });
   }
