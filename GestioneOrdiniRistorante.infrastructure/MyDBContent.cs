@@ -30,7 +30,15 @@ namespace GestioneOrdiniRistorante.Infrastructure
         {
 
             Console.WriteLine("connessione in corso");
-                var connectionString = @"Data Source=DESKTOP-39OFPDS;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False;Application Name=""SQL Server Management Studio"";Command Timeout=0";
+            const string envVarName = "GESTIONE_ORDINI_CONNECTION_STRING";
+            var connectionString = Environment.GetEnvironmentVariable(envVarName, EnvironmentVariableTarget.Machine)
+                ?? Environment.GetEnvironmentVariable(envVarName, EnvironmentVariableTarget.User)
+                ?? Environment.GetEnvironmentVariable(envVarName);
+            Console.WriteLine($"connectionString detected in '{envVarName}' and is: '{connectionString}'");
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new Exception($"La variabile di ambiente '{envVarName}' non è stata trovata o è vuota.");
+            }
             optionsBuilder.UseSqlServer(connectionString, sqlOptions => sqlOptions.EnableRetryOnFailure(
                 maxRetryCount: 3,         // Number of retry attempts
                 maxRetryDelay: TimeSpan.FromSeconds(10),
