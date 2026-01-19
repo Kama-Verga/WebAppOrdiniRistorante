@@ -1,0 +1,64 @@
+https://localhost:7032/Utente/Crea-Utente
+tutti i non autenticati possono usare l'endpoint per creare un utente POST
+{
+  "email": "string",
+  "nome": "string",
+  "cognome": "string",
+  "password": "string",
+  "ruolo": 0
+}
+
+https://localhost:7032/api/v1/Token/Create Token
+questo endpoint è utilizzato per fare i login e ricevere un token jwt
+example values:
+{
+  "email": "string",
+  "password": "string"
+}
+
+https://localhost:7032/Menù
+questo endpoint è utilizzato per sapere il menù GET
+
+----- non pervenuto end point JWT per autorizzazione default
+dove viene letto il token JWT per l'autorizzazione
+
+
+https://localhost:7032/Oridine/CreaOrdine
+qui viene inserito l'indirizzo di consegna e gli id dei piatti da ordinare POST
+example values:
+{
+  "indirizzo_Di_Consegna": "string",
+  "contenuto": [
+    0
+  ]
+}
+contenuto  è una lista di int indici dei prodotti da ordinare
+
+https://localhost:7032/Oridine/Visualizza Ordini
+mostra tutta la cronologia di ordini di ogni utente o di tutti gli utenti  POST
+example values:
+{
+  "giornoInizio": "2026-01-06T18:23:14.430Z",
+  "giornoFine": "2026-01-06T18:23:14.430Z",
+  "idUtente_Opsionale": 0
+}
+se l'id utente è 0 e il role di chi fa la richiesta è 0 visualizza tutti gli ordini di ogni utente
+
+
+https://localhost:7032/Oridine/Visualizza Ordine da Id
+mostra in dettaglio un ordine in base all'id contiene anche gli oggetti ordinati
+example request value:
+{
+  "id_Ordine": 1
+}
+exmaple response value:
+{
+  "numeroOrdine": 1,
+  "dataCreazione": "2026-01-15T00:00:00",
+  "indirizzoDiConsegna": "string",
+  "prezzo": 8.09,
+  "utenteId": 1,
+  "prodottiId": [
+    1
+  ]
+}

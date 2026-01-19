@@ -24,11 +24,25 @@ export interface OrderItemInOrder {
 }
 
 export interface Order {
+  numero_Ordine?: number;
   utenteId: number;
   data_creazione: string; // ISO string
   indirizzo_Di_Consegna: string;
   prezzo: number;
   prodottiInOrdine: OrderItemInOrder[];
+}
+
+export interface OrderByIdRequest {
+  id_Ordine: number;
+}
+
+export interface OrderDetail {
+  numeroOrdine: number;
+  dataCreazione: string;
+  indirizzoDiConsegna: string;
+  prezzo: number;
+  utenteId: number;
+  prodottiId: number[];
 }
 
 export interface OrdersResponse {
