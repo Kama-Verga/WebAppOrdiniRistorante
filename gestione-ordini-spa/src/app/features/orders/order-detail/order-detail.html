@@ -1,0 +1,110 @@
+<section class="order-detail-shell">
+  <header class="page-hero">
+    <div class="hero-copy">
+      <h1>Order details</h1>
+      <p>Review the selected order and its contents.</p>
+    </div>
+    <div class="hero-actions">
+      <button mat-stroked-button color="primary" routerLink="/orders">Back to orders</button>
+    </div>
+  </header>
+
+  @if (loading) {
+    <mat-card class="status-card loading-card">
+      <mat-progress-spinner diameter="36" mode="indeterminate"></mat-progress-spinner>
+      <span>Loading order...</span>
+    </mat-card>
+  }
+
+  @if (!loading && error) {
+    <mat-card class="status-card error-card">
+      {{ error }}
+    </mat-card>
+  }
+
+  @if (!loading && !error && order) {
+    <mat-card class="detail-card">
+      <div class="detail-header">
+        <div>
+          <h2>Order #{{ order.numeroOrdine }}</h2>
+          <p>Created {{ order.dataCreazione | date:'dd/MM/yyyy'}}</p>
+        </div>
+        <mat-chip-set>
+          <mat-chip color="primary" selected>{{ order.prodottiId?.length ?? 0 }} items</mat-chip>
+        </mat-chip-set>
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary-item">
+          <span class="label">Delivery address</span>
+          <span class="value">{{ order.indirizzoDiConsegna }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="label">User</span>
+          <span class="value">#{{ order.utenteId }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="label">Total</span>
+          <span class="value">{{ order.prezzo | currency:'EUR':'code':'1.2-2' }}</span>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="products-section">
+        <h3>Products</h3>
+        @if (menuError) {
+          <p class="products-error">{{ menuError }}</p>
+        }
+
+        @if (menuLoading) {
+          <div class="products-loading">
+            <mat-progress-spinner diameter="28" mode="indeterminate"></mat-progress-spinner>
+            <span>Decoding products...</span>
+          </div>
+        } @else if (lineItems.length) {
+          <table mat-table [dataSource]="lineItems" class="products-table">
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef>ID</th>
+              <td mat-cell *matCellDef="let item">#{{ item.id }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Product</th>
+              <td mat-cell *matCellDef="let item">{{ item.name }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="quantity">
+              <th mat-header-cell *matHeaderCellDef class="cell-right">Qty</th>
+              <td mat-cell *matCellDef="let item" class="cell-right">{{ item.quantity }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="price">
+              <th mat-header-cell *matHeaderCellDef class="cell-right">Price</th>
+              <td mat-cell *matCellDef="let item" class="cell-right">
+                {{ item.price | currency:'EUR':'code':'1.2-2' }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="subtotal">
+              <th mat-header-cell *matHeaderCellDef class="cell-right">Subtotal</th>
+              <td mat-cell *matCellDef="let item" class="cell-right">
+                {{ item.subtotal | currency:'EUR':'code':'1.2-2' }}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+
+          <div class="products-total">
+            <span>Computed total</span>
+            <strong>{{ computedTotal | currency:'EUR':'code':'1.2-2' }}</strong>
+          </div>
+        } @else {
+          <p class="products-empty">No products found for this order.</p>
+        }
+      </div>
+    </mat-card>
+  }
+</section>

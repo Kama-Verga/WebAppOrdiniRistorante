@@ -1,0 +1,132 @@
+.order-detail-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.detail-card,
+.status-card {
+  background: var(--app-surface);
+  border-radius: var(--app-radius);
+  box-shadow: var(--app-shadow);
+}
+
+.status-card {
+  padding: 16px 18px;
+  font-weight: 500;
+}
+
+.loading-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.error-card {
+  border-left: 4px solid #c2534f;
+  background: #fbeeed;
+}
+
+.detail-card {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+
+.detail-header h2 {
+  margin: 0;
+}
+
+.detail-header p {
+  margin: 6px 0 0;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.summary-item {
+  background: var(--app-elevated);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.summary-item .label {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-size: 0.7rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.summary-item .value {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.products-section h3 {
+  margin: 0 0 8px;
+}
+
+.products-table {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.products-table th {
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-size: 0.7rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.products-table td,
+.products-table th {
+  padding: 10px 8px;
+}
+
+.products-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+}
+
+.products-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0 12px;
+}
+
+.products-error {
+  margin: 0 0 10px;
+  color: #c2534f;
+}
+
+.products-empty {
+  margin: 0;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.cell-right {
+  text-align: right;
+}
+
+@media (max-width: 900px) {
+  .detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
