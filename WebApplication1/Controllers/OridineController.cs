@@ -36,61 +36,36 @@ namespace GestioneOrdiniRistorante.Controllers
             UtenteS = IntTemp3;
         }
 
-
         [HttpPost]
         [Route("CreaOrdine")]
-        public async Task<IActionResult> CreaOrdine(CreaOrdineReq T)
+        public async Task<IActionResult> CreaOrdine(CreaOrdineReq req)
         {
-            Ordine ordine = T.ToEntity(int.Parse(UserId));
+            // Validazione base: se usi già [ApiController] e DataAnnotations puoi anche evitare.
+            if (req == null)
+                return BadRequest("Request mancante.");
 
-            List<Prodotto> LP = new List<Prodotto>();
+            // Se UserId può essere non valido, meglio TryParse
+            if (!int.TryParse(UserId, out var userId))
+                return Unauthorized();
 
-            foreach (int prodottoId in T.Contenuto)
-            {
-                // Recupera il prodotto
-                Prodotto prodotto = await ProdottoS.TrovaProdotto(prodottoId);
+            // Qui il controller non fa business logic: delega al service
+            Ordine ordineCreato = await OrdineS.CreaOrdine(req, userId);
 
-                LP.Add(prodotto);
-
-                // Aggiungi il prodotto all'ordine
-                ordine.AggiungiProdotto(prodotto);
-            }
-
-            ordine.Prezzo = CalcolaTotaleConSconto(LP);
-
-            // Salva l'ordine
-            await OrdineS.CreaOrdine(ordine);
-
-            // Crea la risposta
             var response = new CreaOrdineRes
             {
-                Ordine = new OrdineDTO(ordine)
+                Ordine = new OrdineDTO(ordineCreato)
             };
 
             return Ok(response);
         }
 
-        public static decimal CalcolaTotaleConSconto(List<Prodotto> prodotti)
+
+        [HttpPost]
+        [Route("Visualizza Ordine da Id")]
+        public async Task<IActionResult> VisualizzaOrdine(VisualizzaOrdineReq T)
         {
-            decimal totale = 0;
-
-            // Raggruppiamo i prodotti per tipo
-            var gruppi = prodotti.GroupBy(p => p.Tipo);
-
-            // Per ogni gruppo applicare lo sconto del 10%
-            foreach (var gruppo in gruppi)
-            {
-                // Calcoliamo la somma del gruppo
-                decimal sommaGruppo = gruppo.Sum(p => p.Prezzo);
-
-                // Applichiamo lo sconto del 10% al gruppo
-                decimal sommaScontata = sommaGruppo * 0.9m;
-
-                // Aggiungiamo al totale
-                totale += sommaScontata;
-            }
-
-            return totale;
+            var Ris = await OrdineS.TrovaOrdine(T.Id_Ordine);
+            return Ok(Ris);
         }
 
 

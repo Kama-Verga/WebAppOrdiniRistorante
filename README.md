@@ -15,10 +15,12 @@ Il progetto comprende un programma per la gestione di ordini per un ristorante, 
   e SQL Server su Azure per l'host in locale (https://www.microsoft.com/it-it/sql-server/sql-server-downloads)
 - una volta avviato il server tramite SQL Server Azure, si esegue il file "Genera DB.sql" su SSMS che creerà tutte le tabelle e compilerà la tabella del menù.
 - ora sempre su SSMS possiamo eseguire il file "visualizza tutte le tabelle.sql" e vedere se le tabelle sono state create correttamente, dovrebbero essere visibili le tabelle (Utente, Ordine, Prodotto, ProdottoInOrdine).
-- ora bisogna sostituire il link di connessione al interno del progetto  ![1_aM6LRM301UyXFh7APAZYxg](https://github.com/user-attachments/assets/86a92f60-6e5d-4d01-950f-65602042a439)
-  qui troviamo il link di connessione e lo andiamo ha mettere al interno del del MyDBContent, ora il progetto è collegato correttamento al DB ora non resta che avviare ed utilizzare il le API.
-  
-  ![MyDBContent](https://github.com/user-attachments/assets/925f30ab-9f6d-4136-a04f-e44434d0f814) ![Connection Link](https://github.com/user-attachments/assets/2ebd4c86-d638-4634-a6ba-0c3a7e0c27c6)
+- Da qui prendiamo la il link di connessione al DB
+  ![1_aM6LRM301UyXFh7APAZYxg](https://github.com/user-attachments/assets/86a92f60-6e5d-4d01-950f-65602042a439)
+- Ora andiamo a creare la variabile di sistema con il nostro link di connessione.
+- il nome da inserire per la bariabile di sistema è "GESTIONE_ORDINI_CONNECTION_STRING"
+  <img width="685" height="657" alt="Screenshot_2" src="https://github.com/user-attachments/assets/ed8c2a75-c348-408b-bade-92d7da6e9517" />
+
 
 ---
 

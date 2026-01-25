@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../enviroment';
 import { Observable } from 'rxjs';
-import { CreateOrderRequest, OrdersQueryRequest } from '../models/order.models';
-
+import { CreateOrderRequest, Order, OrderByIdRequest, OrderDetail, OrdersQueryRequest, OrdersResponse } from '../models/order.models';
+import { DebugUtil } from '../../shared/utils/debug.utils';
+import { map } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class OrdersService {
+  private PREFIX = "OrderService";
   private base = environment.apiBaseUrl;
   constructor(private http: HttpClient) {}
 
@@ -14,8 +16,16 @@ export class OrdersService {
     return this.http.post(`${this.base}/Oridine/CreaOrdine`, payload);
   }
 
-  listOrders(payload: OrdersQueryRequest): Observable<any[]> {
+  listOrders(payload: OrdersQueryRequest): Observable<Order[]> {
     // from doc: POST /Oridine/Visualizza Ordini :contentReference[oaicite:7]{index=7}
-    return this.http.post<any[]>(`${this.base}/Oridine/Visualizza Ordini`, payload);
+    var res = this.http
+    .post<OrdersResponse>(`${this.base}/Oridine/Visualizza Ordini`, payload)
+    .pipe(map((res) => res.ordini.ordine.result ?? []));
+    DebugUtil.debug(this.PREFIX, res); 
+    return res;
+  }
+
+  getOrderById(payload: OrderByIdRequest): Observable<OrderDetail | null> {
+    return this.http.post<OrderDetail | null>(`${this.base}/Oridine/Visualizza Ordine da Id`, payload);
   }
 }

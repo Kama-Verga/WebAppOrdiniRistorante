@@ -10,7 +10,7 @@ namespace GestioneOrdiniRistorante.Models
     {
     
         [Key]
-        public int Numero_Ordine;
+        public int Numero_Ordine { get; set; }
         public int UtenteId { get; set; }  // Chiave esterna
         public DateTime Data_creazione { get; set; }
         public String Indirizzo_Di_Consegna { get; set; }

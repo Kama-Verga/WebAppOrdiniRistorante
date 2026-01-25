@@ -28,20 +28,28 @@ namespace GestioneOrdiniRistorante.Application.Service
 
         private static IEnumerable<Claim> CreateClaims(Utente T)
         {
-            return new List<Claim>
+            if (T != null)
             {
-            new(ClaimTypes.NameIdentifier, T.Id.ToString()),
-            new(ClaimTypes.Name, T.Nome),
-            new(ClaimTypes.Surname, T.Cognome),
-            new(ClaimTypes.Email, T.Mail),
-            new(ClaimTypes.Role, T.Ruolo.ToString())
-            };
+                return new List<Claim>
+                {
+                    new(ClaimTypes.NameIdentifier, T.Id.ToString()),
+                    new(ClaimTypes.Name, T.Nome),
+                    new(ClaimTypes.Surname, T.Cognome),
+                    new(ClaimTypes.Email, T.Mail),
+                    new(ClaimTypes.Role, T.Ruolo.ToString())
+                };
+            }
+            else
+                throw new Exception("user empty");
         }
 
         public string CreaToken(CreaTokenJWTReq request)
         {
             var utente = _tokenJWTRepository.GetUtente(request.Email, request.Password);
-
+            if(utente == null)
+            {
+                return null;
+            }
             var chiaveDiSicurezza = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtAuthenticationOption.Key));
             var credenziali = new SigningCredentials(chiaveDiSicurezza, SecurityAlgorithms.HmacSha256);
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -53,7 +61,7 @@ namespace GestioneOrdiniRistorante.Application.Service
                 );
 
             var token = new JwtSecurityTokenHandler().WriteToken(securityToken);
-            return "Bearer " + token;
+            return token;
 
         }
     }

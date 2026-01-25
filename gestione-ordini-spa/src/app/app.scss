@@ -1,0 +1,108 @@
+:host {
+  display: block;
+  min-height: 100%;
+}
+
+.app-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: auto;
+  min-height: 64px;
+  background: linear-gradient(120deg, rgba(0, 118, 115, 0.96), rgba(2, 91, 130, 0.96));
+  color: var(--mat-sys-on-primary);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(14px);
+}
+
+.toolbar-content {
+  width: 100%;
+  max-width: var(--app-max-width);
+  margin: 0 auto;
+  padding: 12px var(--app-gutter);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.brand mat-icon {
+  font-size: 22px;
+}
+
+.brand-text {
+  font-size: 1.05rem;
+}
+
+.toolbar-nav {
+  display: flex;
+  gap: 6px;
+}
+
+.toolbar-spacer {
+  flex: 1;
+}
+
+.toolbar-auth {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.app-toolbar a[mat-button],
+.app-toolbar a[mat-stroked-button],
+.app-toolbar button[mat-stroked-button],
+.app-toolbar a[mat-flat-button] {
+  color: inherit;
+}
+
+.app-toolbar a[mat-stroked-button],
+.app-toolbar button[mat-stroked-button] {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.app-toolbar a[mat-flat-button] {
+  background: rgba(255, 255, 255, 0.92);
+  color: #0f4e58;
+}
+
+.page-shell {
+  width: 100%;
+  max-width: var(--app-max-width);
+  margin: 0 auto;
+  padding: 32px var(--app-gutter) 56px;
+  min-height: calc(100vh - 64px);
+}
+
+.active-link {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+@media (max-width: 720px) {
+  .toolbar-content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .toolbar-nav {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .toolbar-auth {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}

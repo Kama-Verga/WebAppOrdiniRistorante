@@ -9,7 +9,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("SpaCors", policy =>
     {
         policy
-        .WithOrigins("http://localhost:4200")
+        .WithOrigins(["http://localhost:4200", "http://192.168.1.12:4200", "http://0.0.0.0:4200"])
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials();
