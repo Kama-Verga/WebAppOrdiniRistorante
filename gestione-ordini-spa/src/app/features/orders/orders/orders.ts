@@ -47,8 +47,7 @@ export class OrdersComponent implements OnInit {
   form: FormGroup;
   displayedColumns: string[] = ['id', 'date', 'address', 'user', 'total', 'items', 'detail'];
 
-  // Keep the same names you had commented out, but actually define them.
-  // If you really need them in the payload, keep them here.
+
   idUtente_Opsionale = 0;
 
   constructor(private cdr : ChangeDetectorRef ,private ordersApi: OrdersService, private fb: FormBuilder, private router: Router) {
