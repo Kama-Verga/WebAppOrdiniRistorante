@@ -18,8 +18,6 @@ export interface OrderDto {
 }
 
 export interface OrderItemInOrder {
-  // backend currently returns [] so we model it flexibly
-  // TODO: replace with the real type once backend is fixed
   [key: string]: unknown;
 }
 

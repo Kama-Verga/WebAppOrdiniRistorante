@@ -3,7 +3,7 @@ export interface RegisterRequest {
   nome: string;
   cognome: string;
   password: string;
-  ruolo: number; // from your doc: 0/...
+  ruolo: number; 
 }
 
 export interface LoginRequest {
@@ -11,8 +11,7 @@ export interface LoginRequest {
   password: string;
 }
 
-// Token response is not specified in your doc; adjust to match your backend.
-// Common options: { token: string } or { accessToken: string }
+// don't remember wich one is used
 export interface TokenResponse {
   token?: string;
   accessToken?: string;
